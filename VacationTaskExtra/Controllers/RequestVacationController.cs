@@ -15,11 +15,11 @@ namespace VacationTaskExtra.Controllers
 {
     public class RequestVacationController : Controller
     {
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<PersonelModel> userManager;
         private readonly VacationDbContext context;
         private IHttpContextAccessor httpContextAccessor;
        
-        public RequestVacationController(VacationDbContext context, UserManager<IdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
+        public RequestVacationController(VacationDbContext context, UserManager<PersonelModel> userManager, IHttpContextAccessor httpContextAccessor)
         {
             this.context = context;
             this.userManager = userManager;

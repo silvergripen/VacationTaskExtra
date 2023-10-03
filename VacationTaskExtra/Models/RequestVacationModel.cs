@@ -4,7 +4,17 @@ namespace VacationTaskExtra.Models
 {
     public class RequestVacationModel
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [NotMapped]
+        public int DiffDates
+        {
+            get
+            {
+                TimeSpan diff = DateEnd - CurrentDate;
+                return (int)diff.TotalDays;
+            }
+        }
+
+            [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RequestVacId { get; set; }
 
         [DataType(DataType.Date)]
@@ -12,6 +22,13 @@ namespace VacationTaskExtra.Models
 
         [DataType(DataType.Date)]
         public DateTime DateEnd { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime CurrentDate { get; set; } = DateTime.Now;
+
+        public bool isActive { get; set; }
+  
+
         [ForeignKey("VacationType")]
         public int FK_VacationType { get; set; }
         public virtual VacationTypeModel VacationType { get; set; }

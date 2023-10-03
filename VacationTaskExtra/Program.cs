@@ -1,6 +1,8 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using VacationTaskExtra.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using VacationTaskExtra.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,14 +11,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<VacationDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+.LogTo(Console.WriteLine, LogLevel.Information));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-options.SignIn.RequireConfirmedAccount = true)
-.AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<VacationDbContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+//options.SignIn.RequireConfirmedAccount = true)
+//.AddRoles<IdentityRole>()
+//.AddEntityFrameworkStores<VacationDbContext>();
 
 
+builder.Services.AddRazorPages();
+
+builder.Services.AddIdentity<PersonelModel, IdentityRole>()
+    .AddEntityFrameworkStores<VacationDbContext>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -52,22 +60,34 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
     }
 }
-using (var scope = app.Services.CreateScope())
-{
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+//using (var scope = app.Services.CreateScope())
+//{ 
+//    //vill inte fungera
+//    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+//    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    string email = "admin@admin.com";
-    string password = "password";
 
-    if (await userManager.FindByEmailAsync(email) == null)
-    {
-        var user = new IdentityUser();
-        user.UserName = email;
-        user.Email = email;
-        user.EmailConfirmed = true;
-        await userManager.CreateAsync(user, password);
+//    string email = "admin@admin.com";
+//    string password = "password";
 
-        userManager.AddToRoleAsync(user, "Admin");
-    }
-}
+//    var user = new IdentityUser();
+//    user.UserName = email;
+//    user.Email = email;
+//    user.EmailConfirmed = true;
+
+//    var result = await userManager.CreateAsync(user, password);
+
+//    if (result.Succeeded)
+//    {
+//        await userManager.AddToRoleAsync(user, "Admin");
+//    }
+//    else
+//    {
+//        foreach (var error in result.Errors)
+//        {
+//            Console.WriteLine($"Error: {error.Description}");
+//        }
+//    }
+
+//}
 app.Run();

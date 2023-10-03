@@ -1,0 +1,42 @@
+﻿@model VacationTaskExtra.Models.RequestVacationModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>RequestVacationModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateStart)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateStart)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateEnd)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateEnd)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.VacationType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.VacationType.TypeId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FK_Personel)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FK_Personel)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.RequestVacId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

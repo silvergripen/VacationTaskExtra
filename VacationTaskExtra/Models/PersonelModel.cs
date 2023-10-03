@@ -8,7 +8,7 @@ namespace VacationTaskExtra.Models
 {
     public partial class PersonelModel : IdentityUser
     {
-
+        
 
         [MaxLength(50)]
         [Required]
@@ -17,8 +17,11 @@ namespace VacationTaskExtra.Models
         [Required]
         public bool IsAdmin { get; set; }
 
-        [ForeignKey("ActiveVacation")]
-        public int FK_ActiveVacationId { get; set; }
+        [ForeignKey("RequestVacation")]
+        public int FK_RequestVacation { get; set; }
         public virtual ICollection<RequestVacationModel>? RequestVacations { get; set; }
+
+        public string RoleName { get; set; }
+
     }
 }

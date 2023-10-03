@@ -5,6 +5,10 @@ namespace VacationTaskExtra.Models
 {
     public class TimeLeftModel
     {
+
+        [NotMapped]
+
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TimeLeftId { get; set; }
         public int TimeLeft { get; set; }
@@ -18,5 +22,11 @@ namespace VacationTaskExtra.Models
         [ForeignKey("VacationType")]
         public int FK_VacationType { get; set; }
         public virtual VacationTypeModel VacationType { get; set; }
+
+        [ForeignKey("RequestVacationModel")]
+
+        public int FK_RequestVacationModel { get; set; }
+
+        public virtual RequestVacationModel VacationModel { get; set; }
     }
 }
