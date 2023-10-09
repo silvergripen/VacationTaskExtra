@@ -19,6 +19,8 @@ namespace VacationTaskExtra.Data
         public DbSet<RequestVacationModel> RequestVacations { get; set; }
         public DbSet<VacationTypeModel> VacationTypes { get; set; }
 
+        public DbSet<TimeLeftModel> TimeLefts { get; set; }
+
 
 
     }

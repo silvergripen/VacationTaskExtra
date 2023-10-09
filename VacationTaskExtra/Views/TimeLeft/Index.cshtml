@@ -1,0 +1,33 @@
+﻿@model List<VacationTaskExtra.Models.TimeLeftModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Time Left</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Time Left</th>
+            <th>Personnel</th>
+            <th>Vacation Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var timeLeft in Model)
+        {
+            <tr>
+                <td>@timeLeft.TimeLeft</td>
+                <td>@timeLeft.Personel.FullName</td>
+                <td>@timeLeft.VacationType.TypeName</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.First().TimeLeftId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</p>
+

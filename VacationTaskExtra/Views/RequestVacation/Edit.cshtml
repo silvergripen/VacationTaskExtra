@@ -1,8 +1,8 @@
 ﻿@model VacationTaskExtra.Models.RequestVacationModel
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> userManager
+@inject SignInManager<PersonelModel> SignInManager
+@inject UserManager<PersonelModel> userManager
 @{
     ViewData["Title"] = "Edit";
 }
@@ -30,13 +30,9 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="FK_VacationType" class="control-label"></label>
-                    <select asp-for="FK_VacationType" class="form-control" asp-items="ViewBag.TypeName"></select>
-                    <span asp-validation-for="FK_VacationType" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="FK_WaitingRequestModel" class="control-label"></label>
-                    <select asp-for="FK_WaitingRequestModel" class="form-control" asp-items="ViewBag.AcceptReject"></select>
-                    <span asp-validation-for="FK_WaitingRequestModel" class="text-danger"></span>
+                    <select asp-for="FK_VacationType" class="form-control" asp-items="ViewBag.FK_VacationType">
+
+                    </select>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Save" class="btn btn-primary" />

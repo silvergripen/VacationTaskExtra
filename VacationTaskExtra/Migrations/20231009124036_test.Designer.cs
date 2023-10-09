@@ -12,8 +12,8 @@ using VacationTaskExtra.Data;
 namespace VacationTaskExtra.Migrations
 {
     [DbContext(typeof(VacationDbContext))]
-    [Migration("20231003153446_anothernewinit")]
-    partial class anothernewinit
+    [Migration("20231009124036_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -214,10 +214,6 @@ namespace VacationTaskExtra.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("RoleName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

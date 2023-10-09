@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using VacationTaskExtra.Models;
+using VacationTaskExtra.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,17 +15,17 @@ builder.Services.AddDbContext<VacationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 .LogTo(Console.WriteLine, LogLevel.Information));
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-//options.SignIn.RequireConfirmedAccount = true)
-//.AddRoles<IdentityRole>()
-//.AddEntityFrameworkStores<VacationDbContext>();
+builder.Services.AddDefaultIdentity<PersonelModel>(options =>
+options.SignIn.RequireConfirmedAccount = true)
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<VacationDbContext>();
 
 
 builder.Services.AddRazorPages();
 
-builder.Services.AddIdentity<PersonelModel, IdentityRole>()
-    .AddEntityFrameworkStores<VacationDbContext>()
-    .AddDefaultTokenProviders();
+//builder.Services.AddIdentity<PersonelModel, IdentityRole>()
+//    .AddEntityFrameworkStores<VacationDbContext>()
+//    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -63,7 +64,9 @@ using (var scope = app.Services.CreateScope())
 //using (var scope = app.Services.CreateScope())
 //{ 
 //    //vill inte fungera
-//    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+//    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<
+//
+//    >>();
 //    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
 

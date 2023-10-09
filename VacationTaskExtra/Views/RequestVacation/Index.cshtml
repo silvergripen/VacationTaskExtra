@@ -1,62 +1,117 @@
 ﻿@model IEnumerable<VacationTaskExtra.Models.RequestVacationModel>
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> userManager
+@inject SignInManager<PersonelModel> SignInManager
+@inject UserManager<PersonelModel> userManager
 
 
 @{
     ViewData["Title"] = "Index";
 }
+@if (User.IsInRole("Admin") || User.IsInRole("User"))
+{
+    <h1>Index </h1>
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DateStart)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateEnd)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VacationType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FK_Personel)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - ExtraTaskVacation</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/ExtraTaskVacation.styles.css" asp-append-version="true" />
+    </head>
+    <body>
+        <div>
+            <a asp-action="Index" asp-route-showAll="true">Show All</a> |
+            <a asp-action="Index" asp-route-showPending="true">Show Pending</a> |
+            <a asp-action="Index" asp-route-showAccepted="true">Show Accepted</a> |
+            <a asp-action="Index" asp-route-showRejected="true">Show Rejected</a>
+        </div>
+        @if (User.IsInRole("Admin"))
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateStart)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateEnd)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VacationType.TypeId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FK_Personel)
-                </td>
-                <td>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.RequestVacId">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.RequestVacId">Delete</a>
-                    }
-                    <a asp-action="Details" asp-route-id="@item.RequestVacId">Details</a>
-                </td>
-            </tr>
+            <div>
+                <form asp-controller="RequestVacation" asp-action="Index" method="get">
+                <input type="text" name="searchString" placeholder="Search by user's FullName" value="@ViewData["SearchString"]" />
+                <button type="submit">Search</button>
+            </form>
+        </div>
         }
-    </tbody>
-</table>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateStart)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateStart)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.VacationType.TypeName) 
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Personels.FullName)
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateStart)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateEnd)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.VacationType.TypeName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Personels.FullName)
+                        </td>
+                        <td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <form asp-action="UpdateWaitingRequest" method="post">
+                                    @Html.DropDownListFor(modelItem => item.FK_WaitingRequestModel, ViewData["WaitingRequestModels"] as SelectList, new { @class = "form-control", onchange = $"updateHiddenInput(this, {item.RequestVacId});" })
+                                    <input type="hidden" name="newWaitingRequestId" id="newWaitingRequestId-@item.RequestVacId" value="" />
+                                    <input type="hidden" name="id" value="@item.RequestVacId" />
+                                    <button type="submit">Submit</button>
+                                </form>
+                            }
+                            else
+                            {
+                                @item.WaitingRequest.AcceptReject
+                            }
+
+                            <script>
+                                function updateHiddenInput(selectElement, requestId) {
+                                var selectedValue = selectElement.value;
+                                document.getElementById('newWaitingRequestId-' + requestId).value = selectedValue;
+                                }
+                            </script>
+                        </td>
+
+                        <td>
+                                <a asp-action="Edit" asp-route-id="@item.RequestVacId">Edit</a>
+                                <a asp-action = "Delete" asp-route-id = "@item.RequestVacId" > Delete </a>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </body>
+    </html>
+}

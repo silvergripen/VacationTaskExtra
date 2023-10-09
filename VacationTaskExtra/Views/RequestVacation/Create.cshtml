@@ -24,8 +24,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="FK_VacationType" class="control-label"></label>
-                <select asp-for="FK_VacationType" class="form-control" asp-items="ViewBag.TypeName"></select>
+                <select asp-for="FK_VacationType" class="form-control" asp-items="ViewBag.FK_VacationType">
+                    <option value="">Select a Vacation Type</option>
+                </select>
             </div>
+
+
+
+
             <div>
             </div>
             <div class="form-group">

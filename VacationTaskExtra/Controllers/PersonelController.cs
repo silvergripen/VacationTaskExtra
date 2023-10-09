@@ -14,8 +14,7 @@ namespace VacationTaskExtra.Controllers
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly VacationDbContext context;
 
-
-        public PersonelController(VacationDbContext context, UserManager<PersonelModel> userManager)
+        public PersonelController(VacationDbContext context, UserManager<PersonelModel> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.context = context;
             this.userManager = userManager;
@@ -24,17 +23,24 @@ namespace VacationTaskExtra.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var usersWithRoles = await userManager.Users
-                .Select(user => new
-                {
-                    user.Id,
-                    user.UserName,
-                    user.FullName,
-                    Roles = userManager.GetRolesAsync(user).Result
-                })
-                .ToListAsync();
 
-            return View(usersWithRoles);
+            var users = await context.Personels.ToListAsync();
+
+            var userRoles = new List<RoleUserViewModel>();
+
+            foreach (var user in users)
+            {
+                var roles = await userManager.GetRolesAsync(user);
+
+                userRoles.AddRange(roles.Select(role => new RoleUserViewModel
+                {
+                    UserId = user.Id,
+                    FullName = user.FullName,
+                    Role = string.Join(", ", roles)
+                }));
+            }
+
+            return View(userRoles); 
         }
         public async Task<IActionResult> Delete(string id)
         {
@@ -74,7 +80,7 @@ namespace VacationTaskExtra.Controllers
             {
                 return NotFound();
             }
-
+         
             var personelModel = await context.Personels.FindAsync(id);
 
             if (personelModel == null)
@@ -82,12 +88,12 @@ namespace VacationTaskExtra.Controllers
                 return NotFound();
             }
 
-            // Retrieve all roles
-            var allRoles = roleManager.Roles.ToList();
-
             // Retrieve the roles for the user
             var user = await userManager.FindByIdAsync(id);
             var userRoles = await userManager.GetRolesAsync(user);
+
+            // Retrieve all roles using roleManager
+            var allRoles = await roleManager.Roles.ToListAsync(); // Use ToListAsync() to retrieve roles asynchronously
 
             // Create a list of SelectListItem for roles, setting the selected role for the user
             var roleList = new List<SelectListItem>();
@@ -106,10 +112,44 @@ namespace VacationTaskExtra.Controllers
             return View(personelModel);
         }
 
-        public async Task<IActionResult> Edit(int id, [Bind("")] RequestVacationModel requestVacationModel)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, string selectedRole)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var personelModel = await context.Personels.FindAsync(id);
+
+            if (personelModel == null)
+            {
+                return NotFound();
+            }
+
+            // Retrieve the user
+            var user = await userManager.FindByIdAsync(id);
+
+            // Retrieve all roles using roleManager
+            var allRoles = await roleManager.Roles.ToListAsync(); // Use ToListAsync() to retrieve roles asynchronously
+
+            // Remove all existing roles from the user
+            var userRoles = await userManager.GetRolesAsync(user);
+            await userManager.RemoveFromRolesAsync(user, userRoles);
+
+            // Assign the selected role to the user
+            await userManager.AddToRoleAsync(user, selectedRole);
+
+            // Redirect to a success page or return to the user's details page
+            return RedirectToAction(nameof(Index));
         }
+
+
+        //public async Task<IActionResult> Edit(int id, [Bind("Id")] RequestVacationModel requestVacationModel)
+        //{
+        //    return View();
+        //}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

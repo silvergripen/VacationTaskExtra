@@ -17,7 +17,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using VacationTaskExtra.Data;
 using VacationTaskExtra.Models;
 
 namespace VacationTaskExtra.Areas.Identity.Pages.Account
@@ -26,6 +28,7 @@ namespace VacationTaskExtra.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<PersonelModel> _signInManager;
         private readonly UserManager<PersonelModel> _userManager;
+        private readonly VacationDbContext context;
         private readonly IUserStore<PersonelModel> _userStore;
         private readonly IUserEmailStore<PersonelModel> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
@@ -36,7 +39,8 @@ namespace VacationTaskExtra.Areas.Identity.Pages.Account
             IUserStore<PersonelModel> userStore,
             SignInManager<PersonelModel> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            VacationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +48,7 @@ namespace VacationTaskExtra.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            this.context = context;
         }
 
         /// <summary>
@@ -130,6 +135,21 @@ namespace VacationTaskExtra.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    // Create TimeLeftModel entries for each vacation type
+                    var vacationTypes = await context.VacationTypes.ToListAsync();
+                    foreach (var vacationType in vacationTypes)
+                    {
+                        var timeLeft = new TimeLeftModel
+                        {
+                            FK_Personel = user.Id,
+                            FK_VacationType = vacationType.TypeId,
+                            TimeLeft = vacationType.maxTime // Initialize with max time
+                        };
+                        context.Add(timeLeft);
+                    }
+
+                    await context.SaveChangesAsync();
                     await _userManager.AddToRoleAsync(user, "User");
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

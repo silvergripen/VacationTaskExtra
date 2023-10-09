@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace VacationTaskExtra.Models
 {
@@ -20,8 +20,6 @@ namespace VacationTaskExtra.Models
         [ForeignKey("RequestVacation")]
         public int FK_RequestVacation { get; set; }
         public virtual ICollection<RequestVacationModel>? RequestVacations { get; set; }
-
-        public string RoleName { get; set; }
 
     }
 }

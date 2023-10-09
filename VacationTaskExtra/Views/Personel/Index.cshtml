@@ -1,5 +1,4 @@
-﻿@model IEnumerable<VacationTaskExtra.Models.PersonelModel>
-
+﻿@model IEnumerable<VacationTaskExtra.Models.RoleUserViewModel>
 @{
     ViewData["Title"] = "Index";
 }
@@ -29,10 +28,10 @@
                     @Html.DisplayFor(modelItem => item.FullName)
                 </td>
                 <td>
-                    @item.RoleName <!-- Display the user's role -->
+                    @Html.DisplayFor(modelItem => item.Role)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit Role</a> |
+                    <a asp-action="Edit" asp-route-id="@item.UserId">Edit Role</a> |
               @*       <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
                 </td>

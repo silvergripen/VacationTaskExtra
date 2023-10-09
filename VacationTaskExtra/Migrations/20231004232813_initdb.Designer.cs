@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VacationTaskExtra.Data;
 
@@ -11,9 +12,11 @@ using VacationTaskExtra.Data;
 namespace VacationTaskExtra.Migrations
 {
     [DbContext(typeof(VacationDbContext))]
-    partial class VacationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231004232813_initdb")]
+    partial class initdb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -279,33 +282,6 @@ namespace VacationTaskExtra.Migrations
                     b.ToTable("RequestVacations");
                 });
 
-            modelBuilder.Entity("VacationTaskExtra.Models.TimeLeftModel", b =>
-                {
-                    b.Property<int>("TimeLeftId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TimeLeftId"));
-
-                    b.Property<string>("FK_Personel")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("FK_VacationType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TimeLeft")
-                        .HasColumnType("int");
-
-                    b.HasKey("TimeLeftId");
-
-                    b.HasIndex("FK_Personel");
-
-                    b.HasIndex("FK_VacationType");
-
-                    b.ToTable("timeLefts");
-                });
-
             modelBuilder.Entity("VacationTaskExtra.Models.VacationTypeModel", b =>
                 {
                     b.Property<int>("TypeId")
@@ -418,25 +394,6 @@ namespace VacationTaskExtra.Migrations
                     b.Navigation("VacationType");
 
                     b.Navigation("WaitingRequest");
-                });
-
-            modelBuilder.Entity("VacationTaskExtra.Models.TimeLeftModel", b =>
-                {
-                    b.HasOne("VacationTaskExtra.Models.PersonelModel", "Personel")
-                        .WithMany()
-                        .HasForeignKey("FK_Personel")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VacationTaskExtra.Models.VacationTypeModel", "VacationType")
-                        .WithMany()
-                        .HasForeignKey("FK_VacationType")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Personel");
-
-                    b.Navigation("VacationType");
                 });
 
             modelBuilder.Entity("VacationTaskExtra.Models.PersonelModel", b =>
